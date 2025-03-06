@@ -4,6 +4,8 @@
 #include <iostream>
 using namespace std;
 
+char alphabet[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()";
+int alphabet_size = 72;
 /**
 string password = nullptr;
 */
@@ -31,7 +33,23 @@ getPasswordIntervals(2, 1) -> [“A”,”L”,”Z”]
 getPasswordIntervals(1, 2) -> [“A”,”ZZ”]
 getPasswordIntervals(2, 2) -> [“A”,”LA”,”ZZ”]
 */
-vector<string> getPasswordIntervals(int num_threads, int max_password_length);
+vector<string> getPasswordIntervals(int num_threads, int max_password_length){
+  int chunks = 72 / num_threads;
+  vector<string> passwords;
+
+  
+}
+
+
+
+int getTotalCombinations(int max_password_length){
+  int total = 0;
+  for(int i = 1; i <= max_password_length; i++){ //Loop through and get total number for each character length 
+    total += pow(72, i); //Store sum 
+  }
+  return total;
+}
+
 
 /**
   Returns the next password for a given password
