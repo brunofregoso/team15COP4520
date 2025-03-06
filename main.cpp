@@ -1,6 +1,7 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <iostream>
 using namespace std;
 
 /**
@@ -38,7 +39,17 @@ vector<string> getPasswordIntervals(int num_threads, int max_password_length);
     “Z”-> “AA”(assuming alphabet is only uppercase letters)
     “AA”-> “AB”
 */
-string incrementPassword(string password);
+string incrementPassword(string password){
+  for(int i = password.size() - 1; i >= 0; i--){
+    if(password[i] == 'Z'){
+      password[i] = 'A';
+    } else {
+      password[i]++;
+      return password;
+    }
+  }
+  return "A" + password;
+}
 
 struct DataPoint
 {
@@ -115,7 +126,7 @@ DataResult findBestThreadCountForPassword(int max_threads, string hashed_passwor
 
 /**
 Run timeCrackPassword 3 times and take the median run as the runtime for that thread, repeat for all threads in num_threads [1,10,50,100]
-*/
+*/ 
 DataResult crackPasswordForThreadCounts(vector<int> num_threads, string hashed_password)
 {
   DataResult result;
@@ -127,7 +138,7 @@ DataResult crackPasswordForThreadCounts(vector<int> num_threads, string hashed_p
     long median_time = runCrackPasswordAndGetMedian(num_thread, hashed_password, 3, result.all_data_points);
   }
   return result;
-}
+} 
 
 // CONOR
 /**
@@ -140,4 +151,6 @@ Read in file, call findBestThreadCountForPassword and crackPasswordForThreadCoun
 Save results to an output file.
 Arguments: path_to_hashed_passswords_file.txt
 */
-void main(int argc, char *argv[]);
+int main(int argc, char *argv[]){
+ return 0;
+};
