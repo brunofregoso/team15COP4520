@@ -40,9 +40,6 @@ int alphabet_size = 72;
 string password = nullptr;
 */
 
-
-
-
 std::atomic<bool> password_cracked(false);
 string password = "";
 // DANNY
@@ -53,14 +50,8 @@ Spins up num_threads threads to crack a password and returns the computation tim
 long timeCrackPassword(int num_threads, string hashed_password) {
   
     password_cracked = false;
-
-   
     vector<string> intervals = getPasswordIntervals(num_threads, hashed_password.length());
-
-   
     auto start_time = std::chrono::high_resolution_clock::now();
-
-   
     vector<thread> threads;
     for (int i = 0; i < num_threads; ++i) {
         string start_password = intervals[i];
@@ -68,15 +59,10 @@ long timeCrackPassword(int num_threads, string hashed_password) {
         threads.emplace_back(crackPassword, hashed_password, start_password, end_password);
     }
 
-  
     for (auto& t : threads) {
         t.join();
     }
-
-
     auto end_time = std::chrono::high_resolution_clock::now();
-
-    
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time);
 
     return duration.count();
@@ -96,10 +82,6 @@ string hashPassword(const string& password) {
   }
   return ss.str();
 }
-
-
-
-
 /**
 This represents a thread that will attempt to crack hashed_password starting from start_password to end_password. If it’s correct, update globals. Check the globals to determine if the thread should exit early.
 */
@@ -108,17 +90,13 @@ This represents a thread that will attempt to crack hashed_password starting fro
     string current_password = start_password;
 
     while (current_password <= end_password && !password_cracked) {
-        // Hash the candidate password
-        string candidate_hash = hashPassword(current_password);
-
-        // Compare the hashes
+        
+        string candidate_hash = hashPassword(current_password);      
         if (candidate_hash == hashed_password) {
             password_cracked = true;
             password = current_password;
             break;
         }
-
-        // Move to the next candidate password
         current_password = incrementPassword(current_password);
     }
 }
