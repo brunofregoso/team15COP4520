@@ -1,28 +1,127 @@
 #include <string>
+#include <algorithm> 
 #include <vector>
 #include <map>
+#include <thread> 
+#include <chrono> 
+#include <atomic> 
 #include <iostream>
+#include <openssl/sha.h>
+#include <sstream> 
+#include <iomanip>
+#include <cmath>
 using namespace std;
+struct DataPoint
+{
+  int thread_count;
+  long time_to_crack;
+};
+
+struct DataResult
+{
+  string hashed_password;
+  string password;
+  vector<DataPoint> all_data_points;
+};
+long timeCrackPassword(int num_threads, string hashed_password);
+string hashPassword(const string& password);
+void crackPassword(string hashed_password, string start_password, string end_password);
+vector<string> getPasswordIntervals(int num_threads, int max_password_length);
+string incrementPassword(string password);
+int getTotalCombinations(int max_password_length);
+string getPasswordFromIndex(long long index, int max_password_length);
+long getMedianTime(vector<DataPoint> data_points);
+long runCrackPasswordAndGetMedian(int num_threads, string hashed_password, int num_runs, vector<DataPoint> results);
+
 
 char alphabet[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()";
 int alphabet_size = 72;
 /**
 string password = nullptr;
 */
-bool password_cracked = false;
-// Idk, come up with something you may want lol
-string password = "";
 
+
+
+
+std::atomic<bool> password_cracked(false);
+string password = "";
 // DANNY
 /**
 Spins up num_threads threads to crack a password and returns the computation time in milliseconds.
 */
-long timeCrackPassword(int num_threads, string hashed_password);
+
+long timeCrackPassword(int num_threads, string hashed_password) {
+  
+    password_cracked = false;
+
+   
+    vector<string> intervals = getPasswordIntervals(num_threads, hashed_password.length());
+
+   
+    auto start_time = std::chrono::high_resolution_clock::now();
+
+   
+    vector<thread> threads;
+    for (int i = 0; i < num_threads; ++i) {
+        string start_password = intervals[i];
+        string end_password = intervals[i + 1];
+        threads.emplace_back(crackPassword, hashed_password, start_password, end_password);
+    }
+
+  
+    for (auto& t : threads) {
+        t.join();
+    }
+
+
+    auto end_time = std::chrono::high_resolution_clock::now();
+
+    
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time);
+
+    return duration.count();
+}
+// hashPassword function to hash potential passwords to match with the hashed passwords 
+
+string hashPassword(const string& password) {
+  unsigned char hash[SHA256_DIGEST_LENGTH];
+  SHA256_CTX sha256;
+  SHA256_Init(&sha256);
+  SHA256_Update(&sha256, password.c_str(), password.size());
+  SHA256_Final(hash, &sha256);
+
+  stringstream ss;
+  for (int i = 0; i < SHA256_DIGEST_LENGTH; i++) {
+      ss << hex << setw(2) << setfill('0') << (int)hash[i];
+  }
+  return ss.str();
+}
+
+
+
 
 /**
 This represents a thread that will attempt to crack hashed_password starting from start_password to end_password. If it’s correct, update globals. Check the globals to determine if the thread should exit early.
 */
-void crackPassword(string hashed_password, string start_password, string end_password);
+
+  void crackPassword(string hashed_password, string start_password, string end_password) {
+    string current_password = start_password;
+
+    while (current_password <= end_password && !password_cracked) {
+        // Hash the candidate password
+        string candidate_hash = hashPassword(current_password);
+
+        // Compare the hashes
+        if (candidate_hash == hashed_password) {
+            password_cracked = true;
+            password = current_password;
+            break;
+        }
+
+        // Move to the next candidate password
+        current_password = incrementPassword(current_password);
+    }
+}
 
 // BRUNO
 /**
@@ -80,18 +179,7 @@ string incrementPassword(string password){
   return "A" + password;
 }
 
-struct DataPoint
-{
-  int thread_count;
-  long time_to_crack;
-};
 
-struct DataResult
-{
-  string hashed_password;
-  string password;
-  vector<DataPoint> all_data_points;
-};
 
 // EVAN
 
