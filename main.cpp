@@ -33,12 +33,7 @@ getPasswordIntervals(2, 1) -> [“A”,”L”,”Z”]
 getPasswordIntervals(1, 2) -> [“A”,”ZZ”]
 getPasswordIntervals(2, 2) -> [“A”,”LA”,”ZZ”]
 */
-vector<string> getPasswordIntervals(int num_threads, int max_password_length){
-  int chunks = 72 / num_threads;
-  vector<string> passwords;
 
-  
-}
 
 
 
@@ -50,6 +45,22 @@ int getTotalCombinations(int max_password_length){
   return total;
 }
 
+
+vector<string> getPasswordIntervals(int num_threads, int max_password_length){
+  vector<string> interval;
+  long long combinations = getTotalCombinations(max_password_length);
+  long long interval_size = combinations / num_threads;
+  for(int i = 0; i <= num_threads; i++){
+    long long start = i * interval_size;
+    if(start >= combinations){
+      start = combinations - 1;
+    }
+    interval.push_back(getPasswordFromIndex(start, max_password_length));
+  }
+
+
+  return interval;
+}
 
 /**
   Returns the next password for a given password
@@ -170,5 +181,5 @@ Save results to an output file.
 Arguments: path_to_hashed_passswords_file.txt
 */
 int main(int argc, char *argv[]){
- return 0;
+  return 0;
 };
