@@ -2,6 +2,7 @@
 #include <vector>
 #include <map>
 #include <iostream>
+#include <cmath>
 using namespace std;
 
 char alphabet[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()";
@@ -37,14 +38,33 @@ getPasswordIntervals(2, 2) -> [“A”,”LA”,”ZZ”]
 
 
 
-int getTotalCombinations(int max_password_length){
-  int total = 0;
+long long getTotalCombinations(int max_password_length){
+  long long total = 0;
   for(int i = 1; i <= max_password_length; i++){ //Loop through and get total number for each character length 
     total += pow(72, i); //Store sum 
   }
   return total;
 }
 
+
+string getPasswordFromIndex(long long index, int max_password_length){
+  long long start = 0;
+  long long combinations = getTotalCombinations(max_password_length);
+  for(int i = 1; i <= max_password_length; i++){
+    long long combinationsforlengt = pow(72, i);
+    if(index < combinationsforlengt + start){
+      index -= start;
+      string password;
+      for(int j = 0; j < i; j++){
+        password = alphabet[index % 72] + password;
+        index /= 72;
+      }
+      return password;
+    } 
+    start += combinationsforlengt;
+  }
+  return "";
+}
 
 vector<string> getPasswordIntervals(int num_threads, int max_password_length){
   vector<string> interval;
