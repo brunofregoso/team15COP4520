@@ -297,8 +297,13 @@ DataResult crackPasswordForThreadCounts(int num_threads, string hashed_password)
 
 // CONOR
 /**
-Writes all the data to a CSV file to later be read
-*/
+ * void outputDataToCSV(vector<DataResult> output, string filename)
+ *
+ * @param output
+ * @param filename
+ *
+ * This function takes a vector of DataResults and writes them to a CSV file.
+ */
 void outputDataToCSV(vector<DataResult> output, string filename)
 {
     ofstream file(filename);
@@ -312,10 +317,16 @@ void outputDataToCSV(vector<DataResult> output, string filename)
 }
 
 /**
-Read in file, call findBestThreadCountForPassword and
-crackPasswordForThreadCounts for each password in the input file. Save results
-to an output file. Arguments: path_to_hashed_passswords_file.txt
-*/
+ * int main(int argc, char *argv[])
+ *
+ * @param argc
+ * @param argv
+ * @return int
+ *
+ * The main function reads in a file containing plaintext passwords, hashes
+ * them, and then attempts to crack them using multiple threads. The results
+ * are then written to a CSV file.
+ */
 int main(int argc, char *argv[])
 {
     // TODO: Command line flags for output file name, max threads, etc.
