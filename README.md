@@ -1,5 +1,18 @@
-# Compilation Instructions 
+# COP 4520 Team 15 Project
+View our paper [here](about:blank)
 
-Compile the program with your compiler of choice and compile within the command line. (e.g. gcc main.cpp)
+## Team Members
+todo
 
-Run output file with ./main.o > output.csv
+## Description
+Multithreaded brute force password cracker.
+
+## Development
+OpenSSL and support for multithreading is required to build this project. Use the following to compile:
+```bash
+g++ ./main.cpp -Wall -lssl -lcrypto -lpthread -o main
+```
+To run, pass a list of plaintext passwords to the program:
+```bash
+./main passwords.txt
+```
