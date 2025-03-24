@@ -372,7 +372,7 @@ int main(int argc, char *argv[])
     cout << "Reading " << argv[1] << "..." << endl;
     string filename = argv[1];
     ifstream file(filename);
-    int max_threads = thread::hardware_concurrency();
+    int max_threads = 10;
     string line;
     vector<string> hashed_passwords;
     vector<DataResult> results;
