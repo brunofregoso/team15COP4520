@@ -125,7 +125,9 @@ void crackPassword(string hashed_password, string start_password,
             password         = current_password;
             break;
         }
-        current_password = incrementPassword(current_password);
+        if(!password_cracked){
+            current_password = incrementPassword(current_password);
+        }
     }
 }
 
@@ -310,10 +312,10 @@ thread, repeat for all threads in num_threads [1,10,50,100]
 DataResult crackPasswordForThreadCounts(int num_threads, string hashed_password)
 {
     DataResult result;
-    for (int i = 1; i < num_threads; i++)
+    for (int i = 1; i <= num_threads; i++)
     {
         long median_time = runCrackPasswordAndGetMedian(
-            num_threads, hashed_password, 3, result.all_data_points);
+            i, hashed_password, 3, result.all_data_points);
             cout << "median time is :" << median_time << "" << endl; 
     }
     result.hashed_password = hashed_password;
